@@ -3,9 +3,9 @@ const {
   GatewayIntentBits,
   Partials,
   ActivityType
-} = require('discord.js');
+} = require("discord.js");
 
-const ROLE_ID = '1508473350899367976';
+const ROLE_ID = "1508473350899367976";
 
 const client = new Client({
   intents: [
@@ -18,11 +18,22 @@ const client = new Client({
   partials: [Partials.GuildMember]
 });
 
-client.once('ready', () => {
+// prevents spam + lag
+const lastStatus = new Map();
+
+process.on("unhandledRejection", err => {
+  console.error("Unhandled Rejection:", err);
+});
+
+process.on("uncaughtException", err => {
+  console.error("Uncaught Exception:", err);
+});
+
+client.once("ready", () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
 
-client.on('presenceUpdate', async (oldPresence, newPresence) => {
+client.on("presenceUpdate", async (oldPresence, newPresence) => {
   try {
     if (!newPresence?.member) return;
 
@@ -35,32 +46,44 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
       a => a.type === ActivityType.Custom
     );
 
-    const statusText = activity?.state ?? "";
+    const statusText = activity?.state || "";
 
-    console.log(`${member.user.tag} status: "${statusText}"`);
+    // prevent repeated triggers (VERY IMPORTANT)
+    if (lastStatus.get(member.id) === statusText) return;
+    lastStatus.set(member.id, statusText);
 
     const hasTag = statusText.toLowerCase().includes("/figures");
 
     if (hasTag && !member.roles.cache.has(ROLE_ID)) {
-      await member.roles.add(role);
-      console.log(`Gave pic perms to ${member.user.tag}`);
+      try {
+        await member.roles.add(role);
+      } catch (err) {
+        console.error("Add role failed:", err.message);
+      }
     }
 
     if (!hasTag && member.roles.cache.has(ROLE_ID)) {
-      await member.roles.remove(role);
-      console.log(`Removed pic perms from ${member.user.tag}`);
+      try {
+        await member.roles.remove(role);
+      } catch (err) {
+        console.error("Remove role failed:", err.message);
+      }
     }
 
   } catch (err) {
-    console.error("Presence Error:", err);
+    console.error("Presence error:", err);
   }
 });
 
-client.on('messageCreate', async message => {
-  if (message.author.bot) return;
+client.on("messageCreate", async (message) => {
+  try {
+    if (message.author.bot) return;
 
-  if (message.content.toLowerCase().includes('pic perms')) {
-    message.channel.send('Set status to "/figures" to get pic perms.');
+    if (message.content.toLowerCase() === "pic perms") {
+      message.channel.send("Set status to '/figures' to get pic perms.");
+    }
+  } catch (err) {
+    console.error("Message error:", err);
   }
 });
 
