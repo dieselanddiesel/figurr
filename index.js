@@ -5,7 +5,6 @@ const {
   ActivityType
 } = require('discord.js');
 
-
 const ROLE_ID = '1508473350899367976';
 
 const client = new Client({
@@ -44,21 +43,25 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
 
     if (hasTag && !member.roles.cache.has(ROLE_ID)) {
       await member.roles.add(role);
-      console.log(`Gave pic
-
-client.on('messageCreate', async message => {
-  try {
-    if (message.author.bot) return;
-
-    if (message.content.toLowerCase().includes('pic perms')) {
-      await message.channel.send(
-        'Set status to "/figures" to get pic perms.'
-      );
+      console.log(`Gave pic perms to ${member.user.tag}`);
     }
+
+    if (!hasTag && member.roles.cache.has(ROLE_ID)) {
+      await member.roles.remove(role);
+      console.log(`Removed pic perms from ${member.user.tag}`);
+    }
+
   } catch (err) {
-    console.error('Message Error:', err);
+    console.error("Presence Error:", err);
   }
 });
 
-// IMPORTANT: use environment variable
+client.on('messageCreate', async message => {
+  if (message.author.bot) return;
+
+  if (message.content.toLowerCase().includes('pic perms')) {
+    message.channel.send('Set status to "/figures" to get pic perms.');
+  }
+});
+
 client.login(process.env.TOKEN);
