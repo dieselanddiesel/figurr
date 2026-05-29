@@ -5,7 +5,6 @@ const {
   ActivityType
 } = require('discord.js');
 
-require('dotenv').config();
 
 const ROLE_ID = '1508473350899367976';
 
