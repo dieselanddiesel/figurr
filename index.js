@@ -30,34 +30,21 @@ client.on('presenceUpdate', async (oldPresence, newPresence) => {
     const member = newPresence.member;
     const role = member.guild.roles.cache.get(ROLE_ID);
 
-    if (!role) {
-      console.log('Role not found.');
-      return;
-    }
+    if (!role) return;
 
-    const customStatus = newPresence.activities.find(
-      activity => activity.type === ActivityType.Custom
+    const activity = newPresence.activities?.find(
+      a => a.type === ActivityType.Custom
     );
 
-    const statusText = customStatus?.state || '';
+    const statusText = activity?.state ?? "";
 
     console.log(`${member.user.tag} status: "${statusText}"`);
 
-    if (statusText.toLowerCase().includes('/figures')) {
-      if (!member.roles.cache.has(ROLE_ID)) {
-        await member.roles.add(role);
-        console.log(`Gave pic perms to ${member.user.tag}`);
-      }
-    } else {
-      if (member.roles.cache.has(ROLE_ID)) {
-        await member.roles.remove(role);
-        console.log(`Removed pic perms from ${member.user.tag}`);
-      }
-    }
-  } catch (err) {
-    console.error('Presence Error:', err);
-  }
-});
+    const hasTag = statusText.toLowerCase().includes("/figures");
+
+    if (hasTag && !member.roles.cache.has(ROLE_ID)) {
+      await member.roles.add(role);
+      console.log(`Gave pic
 
 client.on('messageCreate', async message => {
   try {
