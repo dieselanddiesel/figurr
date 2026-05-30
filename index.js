@@ -18,7 +18,7 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Web server listening on port ${PORT}`);
+  console.log(`EXPRESS STARTED ON PORT ${PORT}`);
 });
 
 const ROLE_ID = "1508473350899367976";
