@@ -75,21 +75,27 @@ console.log("STATUS TEXT:", statusText);
 
     const hasTag = statusText.toLowerCase().includes("/figures");
 
-    if (hasTag && !member.roles.cache.has(ROLE_ID)) {
-      try {
-        await member.roles.add(role);
-      } catch (err) {
-        console.error("Add role failed:", err.message);
-      }
-    }
+if (hasTag && !member.roles.cache.has(ROLE_ID)) {
+  console.log(`Trying to add role to ${member.user.tag}`);
 
-    if (!hasTag && member.roles.cache.has(ROLE_ID)) {
-      try {
-        await member.roles.remove(role);
-      } catch (err) {
-        console.error("Remove role failed:", err.message);
-      }
-    }
+  try {
+    await member.roles.add(role);
+    console.log(`SUCCESS: Added role to ${member.user.tag}`);
+  } catch (err) {
+    console.error("Add role failed:", err);
+  }
+}
+
+if (!hasTag && member.roles.cache.has(ROLE_ID)) {
+  console.log(`Trying to remove role from ${member.user.tag}`);
+
+  try {
+    await member.roles.remove(role);
+    console.log(`SUCCESS: Removed role from ${member.user.tag}`);
+  } catch (err) {
+    console.error("Remove role failed:", err);
+  }
+}
 
   } catch (err) {
     console.error("Presence error:", err);
