@@ -43,7 +43,7 @@ process.on("uncaughtException", err => {
   console.error("Uncaught Exception:", err);
 });
 
-client.once("ready", () => {
+client.once('clientReady', () => {
   console.log(`Logged in as ${client.user.tag}`);
 });
 
