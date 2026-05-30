@@ -1,4 +1,5 @@
 console.log("NEW VERSION LOADED");
+
 const {
   Client,
   GatewayIntentBits,
