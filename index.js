@@ -50,6 +50,7 @@ client.once('clientReady', () => {
 });
 
 client.on("presenceUpdate", async (oldPresence, newPresence) => {
+  console.log("PRESENCE EVENT FIRED");
   try {
     if (!newPresence?.member) return;
 
