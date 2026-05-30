@@ -5,6 +5,20 @@ const {
   ActivityType
 } = require("discord.js");
 
+const express = require("express");
+
+const app = express();
+
+app.get("/", (req, res) => {
+  res.send("Bot is running!");
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Web server listening on port ${PORT}`);
+});
+
 const ROLE_ID = "1508473350899367976";
 
 const client = new Client({
