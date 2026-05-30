@@ -59,11 +59,15 @@ client.on("presenceUpdate", async (oldPresence, newPresence) => {
 
     if (!role) return;
 
-    const activity = newPresence.activities?.find(
-      a => a.type === ActivityType.Custom
-    );
+    console.log("ACTIVITIES:", JSON.stringify(newPresence.activities, null, 2));
 
-    const statusText = activity?.state || "";
+const activity = newPresence.activities?.find(
+  a => a.type === ActivityType.Custom
+);
+
+const statusText = activity?.state || "";
+
+console.log("STATUS TEXT:", statusText);
 
     // prevent repeated triggers (VERY IMPORTANT)
     if (lastStatus.get(member.id) === statusText) return;
