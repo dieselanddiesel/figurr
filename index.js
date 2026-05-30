@@ -114,4 +114,36 @@ client.on("messageCreate", async (message) => {
   }
 });
 
+// Backup scan every 30 seconds
+setInterval(async () => {
+  try {
+    const guild = client.guilds.cache.first();
+    if (!guild) return;
+
+    await guild.members.fetch();
+
+    for (const member of guild.members.cache.values()) {
+      const custom = member.presence?.activities?.find(
+        a => a.type === ActivityType.Custom
+      );
+
+      const text = (custom?.state || "").toLowerCase();
+
+      if (text.includes("/figures")) {
+        if (!member.roles.cache.has(ROLE_ID)) {
+          await member.roles.add(ROLE_ID);
+          console.log(`SCAN: Added role to ${member.user.tag}`);
+        }
+      } else {
+        if (member.roles.cache.has(ROLE_ID)) {
+          await member.roles.remove(ROLE_ID);
+          console.log(`SCAN: Removed role from ${member.user.tag}`);
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Scan error:", err);
+  }
+}, 30000); // 30 seconds
+
 client.login(process.env.TOKEN);
